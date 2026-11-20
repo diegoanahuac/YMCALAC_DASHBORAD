@@ -49,7 +49,7 @@ Alternativa sin Apps Script: `type: 'gviz'` con el `sheetId`. Exige compartir la
 1. Vincula el formulario a la misma hoja (**Respuestas → Vincular con Hojas de cálculo**).
 2. El formulario necesita las preguntas `Programa`, `Ciclo` y `YMCA`, más una pregunta numérica por indicador.
 3. En `Code.gs`, ajusta `PREGUNTA_A_INDICADOR` con los títulos exactos de tus preguntas.
-4. En Apps Script: **Activadores → Agregar activador → `alEnviarFormulario` → Al enviar el formulario**.
+4. En Apps Script ejecuta `activarFormularios` una vez.
 
 Cada respuesta se convierte en filas de la pestaña `kpis` y reemplaza el valor anterior de esa YMCA, ciclo e indicador.
 

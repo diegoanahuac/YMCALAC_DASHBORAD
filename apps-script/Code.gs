@@ -1,17 +1,22 @@
 /**
  * Sistema MEL YMCA LAC — conector Google Sheets → Dashboard.
  *
- * Se pega en la hoja de cálculo: Extensiones → Apps Script. No requiere servidor propio.
+ * Se pega en la hoja de cálculo (Extensiones → Apps Script) o en un proyecto independiente de
+ * script.google.com; en ese caso escribe el ID de la hoja en SHEET_ID. No requiere servidor propio.
  *
  *   1. Ejecuta `configurar` una vez: crea las pestañas con sus encabezados.
  *   2. (Opcional) Ejecuta `importarDatosActuales`: carga los datos que hoy muestra el dashboard.
  *   3. Implementar → Nueva implementación → Aplicación web
  *        Ejecutar como: yo · Quién tiene acceso: cualquier persona
  *      Copia la URL que termina en /exec y pégala en js/config.js del repositorio.
- *   4. (Formularios) Activadores → Agregar activador → alEnviarFormulario → Al enviar el formulario.
+ *   4. (Formularios) Ejecuta `activarFormularios` una vez.
  *
  * La hoja sigue siendo privada: la aplicación web solo entrega las pestañas listadas en TABS.
  */
+
+// ID de la hoja (lo que va entre /d/ y /edit en su dirección). Vacío = la hoja donde está pegado el script.
+const SHEET_ID = '';
+function hoja_() { return SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet(); }
 
 // Pestañas que lee el dashboard y sus columnas (los encabezados deben coincidir tal cual).
 const TABS = {
@@ -69,7 +74,7 @@ function doGet() {
 }
 
 function leerTodo_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = hoja_();
   const tz = ss.getSpreadsheetTimeZone();
   const out = {};
   Object.keys(TABS).forEach(function (name) {
@@ -94,7 +99,7 @@ function leerTodo_() {
 
 /** Crea las pestañas que falten, con encabezados y formato. No borra nada existente. */
 function configurar() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = hoja_();
   Object.keys(TABS).forEach(function (name) {
     const cols = TABS[name];
     const sh = ss.getSheetByName(name) || ss.insertSheet(name);
@@ -105,12 +110,21 @@ function configurar() {
       if (TEXTO.indexOf(c) >= 0) sh.getRange(2, i + 1, sh.getMaxRows() - 1, 1).setNumberFormat('@');
     });
   });
+  // conteo de filas por pestaña en la portada, si existe
+  const portada = ss.getSheetByName('LEEME');
+  if (portada) Object.keys(TABS).forEach(function (name, i) { portada.getRange(5 + i, 3).setFormula("=COUNTA('" + name + "'!A2:A)"); });
+}
+
+/** Instala (una sola vez) el activador que procesa cada respuesta de formulario. */
+function activarFormularios() {
+  const ya = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'alEnviarFormulario'; });
+  if (!ya) ScriptApp.newTrigger('alEnviarFormulario').forSpreadsheet(hoja_()).onFormSubmit().create();
 }
 
 /** Carga en las pestañas vacías los datos que hoy muestra el dashboard (los JSON del repositorio). */
 function importarDatosActuales() {
   configurar();
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = hoja_();
   Object.keys(TABS).forEach(function (name) {
     const sh = ss.getSheetByName(name);
     if (sh.getLastRow() > 1) return; // ya tiene datos: no se toca
@@ -124,7 +138,7 @@ function importarDatosActuales() {
 }
 
 /**
- * Activador "Al enviar el formulario": convierte la respuesta en filas de `kpis`
+ * Se ejecuta con cada respuesta de formulario (ver `activarFormularios`): convierte la respuesta en filas de `kpis`
  * (una por indicador) y reemplaza la fila anterior de la misma YMCA, ciclo e indicador.
  */
 function alEnviarFormulario(e) {
@@ -137,7 +151,7 @@ function alEnviarFormulario(e) {
   const lock = LockService.getScriptLock();
   lock.waitLock(20000); // dos respuestas simultáneas no se pisan
   try {
-    const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('kpis');
+    const sh = hoja_().getSheetByName('kpis');
     const data = sh.getDataRange().getValues();
     const fila = {}; // clave → número de fila
     for (let i = 1; i < data.length; i++) fila[data[i].slice(0, 4).join('|')] = i + 1;
