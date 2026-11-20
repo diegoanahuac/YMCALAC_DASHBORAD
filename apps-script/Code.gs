@@ -11,6 +11,7 @@
  *      Copia la URL que termina en /exec y pégala en js/config.js del repositorio.
  *   4. (Formularios) Ejecuta `crearFormularios`: crea los cuatro formularios (indicadores, edad y género,
  *      alianzas y cronograma), los vincula a la hoja y activa su procesamiento.
+ *   5. (Recomendado) Ejecuta `protegerFormularios`: pide un código de reporte por YMCA en cada envío.
  *
  * La hoja sigue siendo privada: la aplicación web solo entrega las pestañas listadas en TABS.
  */
@@ -35,7 +36,7 @@ const TABS = {
 };
 // Catálogos que alimentan las listas de los formularios. No se publican en el dashboard.
 const CATALOGOS = {
-  ymcas: ['ymca', 'pais', 'subregion', 'idioma', 'nombre_oficial', 'sitio', 'en_formulario', 'nota'],
+  ymcas: ['ymca', 'pais', 'subregion', 'idioma', 'nombre_oficial', 'sitio', 'en_formulario', 'nota', 'codigo'],
   asociaciones: ['ymca', 'asociacion', 'ciudad', 'verificada'],
 };
 // Columnas que se guardan como texto para que "2023" y "2025-2026" convivan en la misma columna.
@@ -50,7 +51,9 @@ const SNAPSHOT_URL = 'https://raw.githubusercontent.com/diegoanahuac/YMCALAC_DAS
  * Los títulos de las preguntas son la llave: si cambias uno en el formulario, cámbialo también aquí.
  */
 const PROGRAMAS = ['Eleva', 'After School', 'Bluedrop', 'Tejiendo Paz', 'Delta'];
-const PREGUNTAS_CLAVE = { programa: 'Programa', ciclo: 'Ciclo', ymca: 'YMCA', sede: 'Asociación local o sede' };
+const PREGUNTAS_CLAVE = { programa: 'Programa', ciclo: 'Ciclo', ymca: 'YMCA', sede: 'Asociación local o sede', codigo: 'Código de reporte' };
+// Fila de la pestaña `ymcas` que guarda el código maestro (sirve para reportar por cualquier YMCA).
+const MAESTRO = '*';
 
 // --- 1. Indicadores → pestaña `kpis` ---
 const PREGUNTA_A_INDICADOR = {
@@ -379,6 +382,75 @@ function actualizarListas() {
   });
 }
 
+/**
+ * Protege los formularios con un código de reporte. Se puede ejecutar varias veces.
+ *   1. Escribe un código en la columna `codigo` de la pestaña `ymcas` para cada YMCA que no lo tenga,
+ *      y un código maestro en la fila "*" (para la oficina regional).
+ *   2. Agrega la pregunta "Código de reporte" a los formularios que no la tengan.
+ * Desde ese momento solo se procesan las respuestas que traen el código de su YMCA o el maestro.
+ * Para cambiar un código, edita la celda. Para quitar la protección, vacía la columna `codigo`.
+ */
+function protegerFormularios() {
+  configurar();
+  const sh = hoja_().getSheetByName('ymcas');
+  const v = sh.getDataRange().getValues();
+  const cab = v[0].map(function (h) { return String(h).trim().toLowerCase(); });
+  const cY = cab.indexOf('ymca'), cP = cab.indexOf('pais'), cC = cab.indexOf('codigo');
+  const letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0, O, 1 ni I
+  const nuevo = function (prefijo) {
+    const hex = Utilities.getUuid().replace(/-/g, '');
+    let c = '';
+    for (let i = 0; i < 6; i++) c += letras.charAt(parseInt(hex.substr(i * 2, 2), 16) % letras.length);
+    return prefijo + '-' + c;
+  };
+  const prefijo = function (pais) { return String(pais).normalize('NFD').replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase() || 'YMC'; };
+  let hayMaestro = false;
+  for (let i = 1; i < v.length; i++) {
+    if (String(v[i][cY]).trim() === MAESTRO) hayMaestro = true;
+    if (!String(v[i][cY]).trim() || String(v[i][cC]).trim()) continue;
+    sh.getRange(i + 1, cC + 1).setValue(nuevo(String(v[i][cY]).trim() === MAESTRO ? 'LAC' : prefijo(v[i][cP])));
+  }
+  if (!hayMaestro) {
+    const fila = cab.map(function (c) {
+      return c === 'ymca' ? MAESTRO : c === 'nombre_oficial' ? 'Código maestro de la oficina regional' : c === 'en_formulario' ? 'No'
+        : c === 'nota' ? 'Sirve para reportar por cualquier YMCA.' : c === 'codigo' ? nuevo('LAC') : '';
+    });
+    sh.getRange(sh.getLastRow() + 1, 1, 1, fila.length).setValues([fila]);
+  }
+  const props = PropertiesService.getScriptProperties();
+  FORMULARIOS.forEach(function (f) {
+    let form;
+    try { form = FormApp.openById(props.getProperty(f.clave)); } catch (err) { return; }
+    const items = form.getItems();
+    if (items.some(function (it) { return it.getTitle() === PREGUNTAS_CLAVE.codigo; })) return;
+    const item = form.addTextItem().setTitle(PREGUNTAS_CLAVE.codigo).setRequired(true)
+      .setHelpText('Lo entrega la oficina regional de YMCA LAC a cada YMCA. Sin el código correcto, el envío no se procesa. · Reporting code given to each YMCA by the regional office.');
+    const ymca = items.filter(function (it) { return it.getTitle() === PREGUNTAS_CLAVE.ymca; })[0];
+    if (ymca) form.moveItem(item.getIndex(), ymca.getIndex() + 1); // justo después de la pregunta YMCA
+  });
+}
+
+/** Códigos vigentes: { 'YMCA Barbados': 'BAR-…', '*': 'LAC-…' }. Vacío = formularios sin protección. */
+function codigos_() {
+  const sh = hoja_().getSheetByName('ymcas');
+  if (!sh || sh.getLastRow() < 2) return {};
+  const v = sh.getDataRange().getValues();
+  const cab = v[0].map(function (h) { return String(h).trim().toLowerCase(); });
+  const cY = cab.indexOf('ymca'), cC = cab.indexOf('codigo');
+  const out = {};
+  if (cC < 0) return out;
+  for (let i = 1; i < v.length; i++) if (String(v[i][cC]).trim()) out[String(v[i][cY]).trim()] = String(v[i][cC]);
+  return out;
+}
+/** ¿La respuesta trae el código de su YMCA o el maestro? Sin códigos en la hoja, todo pasa. */
+function codigoValido_(r) {
+  const cod = codigos_();
+  if (!Object.keys(cod).length) return true;
+  const n = function (s) { return String(s == null ? '' : s).toUpperCase().replace(/[^A-Z0-9]/g, ''); };
+  const dado = n(r[PREGUNTAS_CLAVE.codigo]);
+  return !!dado && (dado === n(cod[txt_(r, PREGUNTAS_CLAVE.ymca)]) || dado === n(cod[MAESTRO]));
+}
+
 /** Instala (una sola vez) el procesamiento de respuestas y la actualización diaria de las listas. */
 function activarFormularios() {
   const hay = function (fn) { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === fn; }); };
@@ -551,6 +623,7 @@ function alEnviarFormulario(e) {
   lock.waitLock(25000); // dos respuestas simultáneas no se pisan
   try {
     if (!txt_(r, PREGUNTAS_CLAVE.programa) || !txt_(r, PREGUNTAS_CLAVE.ciclo) || !txt_(r, PREGUNTAS_CLAVE.ymca)) nota = 'Sin procesar: falta programa, ciclo o YMCA.';
+    else if (!codigoValido_(r)) nota = 'Sin procesar: el código de reporte no corresponde a ' + txt_(r, PREGUNTAS_CLAVE.ymca) + '.';
     else if (P_ALI.institucion in r) nota = procesarAlianza_(r);
     else if (P_CRO.nombre in r) nota = procesarCronograma_(r);
     else if (P_EDAD.grupo in r) nota = procesarEdadGenero_(r);
@@ -560,6 +633,9 @@ function alEnviarFormulario(e) {
   } finally {
     lock.releaseLock();
   }
+  // el código no se conserva en la pestaña de respuestas
+  const cCod = cab.indexOf(PREGUNTAS_CLAVE.codigo) + 1;
+  if (cCod && fila[cCod - 1] !== '') sh.getRange(e.range.getRow(), cCod).setValue('•••');
   let col = cab.indexOf('Procesamiento') + 1;
   if (!col) { col = ancho + 1; sh.getRange(1, col).setValue('Procesamiento').setFontWeight('bold'); }
   sh.getRange(e.range.getRow(), col).setValue(nota);

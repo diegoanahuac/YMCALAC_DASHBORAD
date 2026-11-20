@@ -67,7 +67,7 @@ Cada envío deja su resultado en la columna `Procesamiento` de la pestaña de re
 
 Los títulos de las preguntas y los textos de las opciones son la llave con la que el script lee cada respuesta. Si cambias uno en el formulario, cámbialo también en las constantes del inicio de `Code.gs`. Para agregar un indicador: añade la pregunta al formulario de indicadores y su título exacto a `PREGUNTA_A_INDICADOR`.
 
-Los formularios son públicos: quien tenga el enlace puede cambiar lo que muestra el dashboard. Compártelos solo con quienes reportan.
+**Código de reporte.** Los formularios son públicos, así que cada envío pide un código. Ejecuta `protegerFormularios` una vez: escribe un código por YMCA en la columna `codigo` de la pestaña `ymcas`, uno maestro en la fila `*` (sirve para cualquier YMCA) y agrega la pregunta a los cuatro formularios. Un envío sin el código de su YMCA no se procesa y queda anotado en `Procesamiento`. Para cambiar un código, edita su celda; para quitar la protección, vacía la columna. Los códigos viven solo en la hoja: no están en este repositorio ni los entrega la aplicación web, y la pestaña de respuestas los guarda como `•••`.
 Un ciclo aparece en el dashboard cuando tiene al menos un indicador en `kpis`.
 
 ### Tiempo de reacción
