@@ -334,6 +334,7 @@ function crearFormularios() {
     Logger.log(f.nombre + ' · editar: ' + form.getEditUrl());
   });
   activarFormularios();
+  actualizarListas(); // los formularios que ya existían reciben la lista completa de YMCA
   const portada = ss.getSheetByName('LEEME');
   if (portada) portada.getRange(16, 1, enlaces.length, 2).setValues(enlaces);
 }

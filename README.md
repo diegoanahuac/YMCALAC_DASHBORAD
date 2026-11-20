@@ -46,16 +46,29 @@ Alternativa sin Apps Script: `type: 'gviz'` con el `sheetId`. Exige compartir la
 
 ## Conectar Google Forms
 
-En Apps Script ejecuta `crearFormulario`. La función:
+En Apps Script ejecuta `crearFormularios`. La función crea los cuatro formularios, los vincula a la hoja (una pestaña de respuestas por formulario), activa el procesamiento de cada envío y anota en la pestaña `LEEME` los enlaces para responder y para editar.
 
-1. Crea el formulario "Reporte de indicadores" con las preguntas `Programa`, `Ciclo` y `YMCA`, más una pregunta numérica por indicador.
-2. Lo vincula a la hoja (pestaña de respuestas) y activa el procesamiento de cada envío.
-3. Anota en la pestaña `LEEME` los enlaces para responder y para editar las preguntas.
+| Formulario | Escribe en | Un envío es | Para corregir |
+| --- | --- | --- | --- |
+| [Indicadores](https://docs.google.com/forms/d/e/1FAIpQLSdhY3tlFAl620PfzpNbVeuOV7D9NHlJ2_UrTzUNtLxLZombWQ/viewform) | `kpis` | Los indicadores de un programa, ciclo y YMCA | Reenviar: reemplaza el valor de cada indicador |
+| [Edad y género](https://docs.google.com/forms/d/e/1FAIpQLSecB_priOKYOyyu8cB2poJHcvrsDfHL-Bdbj00xe0MZaJlWJQ/viewform) | `edad_genero` | Las cifras de un grupo (participantes, equipo, jóvenes líderes…) | Reenviar: reemplaza todas las filas del grupo |
+| [Alianzas](https://docs.google.com/forms/d/e/1FAIpQLScOXtGVGo3p9UZO89W0-_6WmUAYW5Nq9xiYIvWiyZciBOXFfQ/viewform) | `alianzas` | Una alianza con una institución | Reenviar con el mismo nombre de institución y aporte principal |
+| [Cronograma](https://docs.google.com/forms/d/e/1FAIpQLSfIGLWSO4CgwbCUSvOe_S-mFr-BDpe5A_kiS_BsSj1RUcECQw/viewform) | `cronograma` | Hasta tres periodos, eventos o actividades | Reenviar con el mismo nombre; el estado "Cancelado" quita la entrada |
 
-Cada respuesta se convierte en filas de la pestaña `kpis` y reemplaza el valor anterior de esa YMCA, ciclo e indicador.
+Cada envío deja su resultado en la columna `Procesamiento` de la pestaña de respuestas: qué se guardó y qué hay que revisar (por ejemplo, que las casillas de edad no suman el total declarado, o que la fecha de fin es anterior al inicio).
 
-Para agregar un indicador: añade la pregunta al formulario y su título exacto a `PREGUNTA_A_INDICADOR` en el script.
-Quien tenga el enlace del formulario puede cambiar las cifras del dashboard: compártelo solo con quienes reportan.
+**Edad y género.** Cifras agregadas, nunca datos de personas. Pide el total del grupo, cómo se obtuvo (conteo, conteo parcial o estimación) y una casilla por rango de edad para mujeres y niñas y otra para hombres y niños. Las personas no binarias y las que prefieren no decir su género se piden como total, sin edad. Los cuatro géneros equivalen a Male / Female / Non-binary / Unknown del FDRS 2024 de la IFRC. El dashboard suma por género, por YMCA, por ciclo y por año; una cifra de personas no binarias menor a `minCelda` (5) se publica sumada a "No especifica".
+
+**Alianzas.** Clasifica la institución (10 tipos, compatibles con el codelist OrganisationType de IATI), su estado, formalización, año de inicio, alcance y quién aporta a quién. El aporte principal abre una sección de detalle: capacitación (tema, personas capacitadas, certificación), derivación, voluntariado, donación en especie, espacios, implementación conjunta o financiamiento. Los montos y la valoración de la alianza se quedan en la pestaña de respuestas; no llegan al dashboard.
+
+**Cronograma.** Diez tipos de entrada que el dashboard dibuja como periodo, evento o actividad. "En curso" no se pregunta: se deduce de las fechas.
+
+**Listas de YMCA.** Salen de las pestañas `ymcas` (27 movimientos nacionales de América Latina y el Caribe, por subregión) y `asociaciones` (asociaciones locales). Para agregar una YMCA, añade una fila; las listas de los cuatro formularios se actualizan solas una vez al día, o al momento con `actualizarListas`. Una fila con `en_formulario = No` no aparece.
+
+Los títulos de las preguntas y los textos de las opciones son la llave con la que el script lee cada respuesta. Si cambias uno en el formulario, cámbialo también en las constantes del inicio de `Code.gs`. Para agregar un indicador: añade la pregunta al formulario de indicadores y su título exacto a `PREGUNTA_A_INDICADOR`.
+
+Los formularios son públicos: quien tenga el enlace puede cambiar lo que muestra el dashboard. Compártelos solo con quienes reportan.
+Un ciclo aparece en el dashboard cuando tiene al menos un indicador en `kpis`.
 
 ### Tiempo de reacción
 
@@ -78,9 +91,9 @@ Una pestaña de la hoja (o un archivo de `/data`) por dataset. Los encabezados d
 | --- | --- |
 | `kpis` | programa, ciclo, ymca, indicador, valor, anterior\*, cambio_pct\* |
 | `implementaciones` | programa, ciclo, ymca, pais, ciudad, lat, lon, comunidad, donantes |
-| `cronograma` | programa, ciclo, ymca, etiqueta, tipo (`periodo`, `evento`, `actividad`), inicio, fin |
-| `edad_genero` | programa, segmento, ciclo, ymca, rango_edad, genero, n |
-| `alianzas` | programa, ciclo, ymca, institucion, objetivo |
+| `cronograma` | programa, ciclo, ymca, etiqueta, tipo (`periodo`, `evento`, `actividad`), inicio, fin, categoria\*, estado\*, modalidad\*, sede\* |
+| `edad_genero` | programa, segmento, ciclo, ymca, rango_edad, genero, n, metodo\* |
+| `alianzas` | programa, ciclo, ymca, institucion, objetivo\*, tipo_institucion\*, aporte\*, otros_aportes\*, detalle\*, personas\*, formalizacion\*, estado\*, desde\*, alcance\*, direccion\*, sede\* |
 | `perfil_after_school` | ciclo, ymca, formato, hello_insight, tipo_ciclo, continuidad, inicio, fin, locaciones_texto, dias, areas, uso_fondos, otros_donantes, comunidad |
 | `perfil_bluedrop` | ciclo, ymca, modelo, programas_uso, habilidades, actividades |
 | `perfil_tejiendo_paz` | ciclo, ymca, tipo_violencia, grupos_prioritarios |
@@ -88,6 +101,7 @@ Una pestaña de la hoja (o un archivo de `/data`) por dataset. Los encabezados d
 | `registro_datos` | id, programa, informacion, estado, fuente, nota |
 
 \* Opcionales. `mapa_base` (contornos de países) siempre se lee del repositorio.
+Las pestañas `ymcas` y `asociaciones` son catálogos para los formularios; la aplicación web no las entrega.
 
 Valores de `programa`: `Eleva`, `After School`, `Bluedrop`, `Tejiendo Paz`, `Delta`.
 Las listas dentro de una celda se separan con `|`. Las fechas van como fecha de Sheets o `AAAA-MM-DD`.
@@ -103,6 +117,7 @@ En `kpis` basta una fila por YMCA, ciclo e indicador. [`js/derive.js`](js/derive
 - `anterior` y `cambio_pct`: contra el ciclo previo del mismo programa.
 
 Una fila escrita a mano siempre gana. Sirve para totales que no son una suma, como un total regional sin desglose por YMCA.
+En `edad_genero` pasa lo mismo: a partir de las filas por rango se calculan el total por género (`rango_edad = Todas`), `Todas` las YMCA, `Histórico` y `Todos` los programas.
 Las tasas (`tasa_…`) no se agregan.
 
 ## Estructura
@@ -114,8 +129,8 @@ Las tasas (`tasa_…`) no se agregan.
 | `js/dash.js` | Lectura de datos, sondeo, respaldo, validación de columnas y filtros en la URL |
 | `js/derive.js` | Totales automáticos |
 | `js/charts.js`, `js/app.js` | Gráficas y lógica de cada pestaña |
-| `data/` | Datos de respaldo |
-| `apps-script/Code.gs` | Conector para la hoja de cálculo |
+| `data/` | Datos de respaldo y catálogos de YMCA (`ymcas.json`, `asociaciones.json`) |
+| `apps-script/Code.gs` | Conector para la hoja de cálculo: aplicación web, creación de formularios y procesamiento de respuestas |
 
 Los filtros viajan en la dirección, así que una vista se comparte copiando el enlace:
 `…/?ciclo=2026-2027&ymca=YMCA+Barbados#after-school`.
