@@ -16,6 +16,8 @@
   M.AGES4 = [['Infancias (menores de 12)', [0, 1, 2]], ['Adolescentes (12–17)', [3, 4]], ['Jóvenes (18–30)', [5, 6, 7]], ['Personas adultas (más de 30)', [8, 9, 10]]];
   M.toAges4 = (rows) => rows.map((r) => { const i = M.AGES.indexOf(r.rango_edad); const g = M.AGES4.find((a) => a[1].includes(i)); return g ? { ...r, rango_edad: g[0] } : r; });
   M.GEN = ['Hombre/niño', 'Mujer/niña', 'No binario', 'No especifica'];
+  // Una cifra de personas no binarias menor a este mínimo se publica sumada a "No especifica" (evita identificar a alguien en grupos pequeños).
+  M.MIN_CELDA = Math.max(0, +((window.MEL_CONFIG || {}).minCelda ?? 5));
 
   const es = d3.timeFormatLocale({
     dateTime: '%e de %B de %Y', date: '%d/%m/%Y', time: '%H:%M', periods: ['AM', 'PM'],
@@ -197,12 +199,18 @@
     const all = groups.flatMap((gr) => gr.rows);
     const nb = d3.sum(all.filter((r) => r.genero === M.GEN[2] && cats.includes(r.rango_edad)), (r) => r.n);
     const ne = d3.sum(all.filter((r) => r.genero === M.GEN[3] && cats.includes(r.rango_edad)), (r) => r.n);
-    if (nb || ne) el.append(M.el('p', 'm-note-nb', 'Además: ' + [nb ? M.num(nb) + ' no binario' : '', ne ? M.num(ne) + ' sin especificar' : ''].filter(Boolean).join(' · ') + ' (no se muestran en la pirámide).'));
+    const junto = nb > 0 && nb < M.MIN_CELDA; // cifra pequeña: no se publica por separado
+    const partes = junto ? [M.num(nb + ne) + ' no binario o sin especificar'] : [nb ? M.num(nb) + ' no binario' : '', ne ? M.num(ne) + ' sin especificar' : ''].filter(Boolean);
+    if (nb || ne) el.append(M.el('p', 'm-note-nb', 'Además: ' + partes.join(' · ') + ' (no se muestran en la pirámide).'));
   };
 
   // ---------- donut
   M.drawDonut = (el, rows) => {
     const data = M.GEN.map((g, i) => ({ g, n: d3.sum(rows.filter((r) => r.genero === g), (r) => r.n), c: M.G[i] }));
+    if (data[2].n > 0 && data[2].n < M.MIN_CELDA) { // cifra pequeña: se publica junto con "No especifica"
+      data[3] = { g: 'No binario o sin especificar', n: data[2].n + data[3].n, c: data[3].c };
+      data.splice(2, 1);
+    }
     const tot = d3.sum(data, (d) => d.n);
     const wrap = M.el('div', 'm-donut');
     el.append(wrap);
@@ -351,7 +359,8 @@
       rows.filter((r) => r.ymca === ln).sort((a, b) => (a.tipo === 'actividad') - (b.tipo === 'actividad')).forEach((r) => {
         const a = x(M.date(r.inicio)), b = x(new Date(+M.date(r.fin) + 864e5));
         const c = colorOf(r);
-        const lines = [r.ymca, { text: r.etiqueta + ' · ' + (r.inicio === r.fin ? M.fDate(M.date(r.inicio)) : M.fDate(M.date(r.inicio)) + ' – ' + M.fDate(M.date(r.fin))), color: c }];
+        const lines = [r.ymca + (r.sede ? ' · ' + r.sede : ''), { text: r.etiqueta + ' · ' + (r.inicio === r.fin ? M.fDate(M.date(r.inicio)) : M.fDate(M.date(r.inicio)) + ' – ' + M.fDate(M.date(r.fin))), color: c }];
+        if (r.estado || r.modalidad) lines.push([r.estado, r.modalidad].filter(Boolean).join(' · '));
         let node;
         if (r.tipo === 'actividad') {
           node = s.append('circle').attr('cx', (a + b) / 2).attr('cy', y + rowH / 2).attr('r', 5).attr('class', 'm-gdot').style('fill', c);

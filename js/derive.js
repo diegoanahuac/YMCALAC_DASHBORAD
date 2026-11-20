@@ -74,6 +74,47 @@
     return out;
   }
 
+  /*
+   * Totales derivados de la tabla `edad_genero`.
+   * Los formularios entregan filas por YMCA, ciclo, grupo, rango de edad y género. Aquí se completan,
+   * solo para los grupos que la hoja no trae:
+   *   rango_edad "Todas" (total por género), ymca "Todas", ciclo "Histórico" y programa "Todos".
+   */
+  const ALL_SEG = { 'Eleva': ['Jóvenes', 'Adultos'], 'After School': ['Participantes'], 'Tejiendo Paz': ['Participantes'], 'Delta': ['Participantes'] };
+  function deriveAges(ages) {
+    const out = ages.map((r) => Object.assign({}, r));
+    const grp = (r) => r.programa + '|' + r.segmento + '|' + r.ciclo + '|' + r.ymca;
+    // agrega los grupos que no existan; `rows` son las filas de origen y `to` cambia sus claves
+    const roll = (rows, to) => {
+      const have = new Set(out.map(grp));
+      const m = new Map();
+      rows.forEach((r) => {
+        if (r.n == null) return;
+        const t = Object.assign({}, r, to(r));
+        if (have.has(grp(t))) return;
+        const k = grp(t) + '|' + t.rango_edad + '|' + t.genero;
+        if (m.has(k)) m.get(k).n += r.n; else m.set(k, Object.assign(t, { n: r.n, derivado: true }));
+      });
+      m.forEach((r) => out.push(r));
+    };
+    // 1. total por género de cada grupo que solo trae rangos
+    const conTotal = new Set(out.filter((r) => r.rango_edad === T).map(grp));
+    const m = new Map();
+    out.forEach((r) => {
+      if (r.rango_edad === T || r.n == null || conTotal.has(grp(r))) return;
+      const k = grp(r) + '|' + r.genero;
+      if (m.has(k)) m.get(k).n += r.n; else m.set(k, Object.assign({}, r, { rango_edad: T, derivado: true }));
+    });
+    m.forEach((r) => out.push(r));
+    // 2. "Todas" las YMCA  3. "Histórico"  4. "Todos" los programas por año calendario
+    roll(out.filter((r) => r.programa !== ALL && r.ciclo !== H && r.ymca !== T), () => ({ ymca: T }));
+    roll(out.filter((r) => r.programa !== ALL && r.ciclo !== H), () => ({ ciclo: H }));
+    roll(out.filter((r) => r.ciclo !== H && (ALL_SEG[r.programa] || []).includes(r.segmento)), (r) => ({ programa: ALL, segmento: 'Participantes', ciclo: year(r.ciclo) }));
+    roll(out.filter((r) => r.programa === ALL && r.ciclo !== H), () => ({ ciclo: H }));
+    return out;
+  }
+
+  derive.ages = deriveAges;
   root.MEL_DERIVE = derive;
   if (typeof module !== 'undefined' && module.exports) module.exports = derive;
 })(typeof window !== 'undefined' ? window : globalThis);

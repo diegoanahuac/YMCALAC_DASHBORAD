@@ -1,0 +1,224 @@
+[
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA Ciudad de México",
+  "ciudad": "Ciudad de México",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA Chihuahua",
+  "ciudad": "Chihuahua",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA Ciudad Cuauhtémoc",
+  "ciudad": "Cuauhtémoc",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA Ciudad Delicias",
+  "ciudad": "Delicias",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA León",
+  "ciudad": "León",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA Tijuana",
+  "ciudad": "Tijuana",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA México",
+  "asociacion": "YMCA Torreón",
+  "ciudad": "Torreón",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Barranquilla",
+  "ciudad": "Barranquilla",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Bogotá",
+  "ciudad": "Bogotá",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Cali",
+  "ciudad": "Cali",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Medellín",
+  "ciudad": "Medellín",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Puerto Boyacá",
+  "ciudad": "Puerto Boyacá",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Quindío",
+  "ciudad": "",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Risaralda",
+  "ciudad": "",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Santander",
+  "ciudad": "",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "asociacion": "YMCA Tolima",
+  "ciudad": "",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM Belo Horizonte",
+  "ciudad": "Belo Horizonte",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM Brasília",
+  "ciudad": "Brasília",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM Londrina",
+  "ciudad": "Londrina",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM Porto Alegre",
+  "ciudad": "Porto Alegre",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM Rio de Janeiro",
+  "ciudad": "Rio de Janeiro",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM São Paulo",
+  "ciudad": "São Paulo",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "asociacion": "ACM Sorocaba",
+  "ciudad": "Sorocaba",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Chile",
+  "asociacion": "YMCA Santiago",
+  "ciudad": "Santiago",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Chile",
+  "asociacion": "YMCA Antofagasta",
+  "ciudad": "Antofagasta",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Chile",
+  "asociacion": "YMCA Concepción",
+  "ciudad": "Concepción",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Chile",
+  "asociacion": "YMCA Iquique",
+  "ciudad": "Iquique",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Chile",
+  "asociacion": "YMCA Valparaíso",
+  "ciudad": "Valparaíso",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Uruguay",
+  "asociacion": "ACJ Montevideo",
+  "ciudad": "Montevideo",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Uruguay",
+  "asociacion": "ACJ Paysandú",
+  "ciudad": "Paysandú",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Uruguay",
+  "asociacion": "ACJ Salto",
+  "ciudad": "Salto",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Uruguay",
+  "asociacion": "ACJ San José",
+  "ciudad": "San José de Mayo",
+  "verificada": "No"
+ },
+ {
+  "ymca": "YMCA Jamaica",
+  "asociacion": "Kingston YMCA",
+  "ciudad": "Kingston",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Trinidad y Tobago",
+  "asociacion": "YMCA Port of Spain",
+  "ciudad": "Puerto España",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Trinidad y Tobago",
+  "asociacion": "YMCA Tobago",
+  "ciudad": "",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Venezuela",
+  "asociacion": "YMCA de Valencia",
+  "ciudad": "Valencia",
+  "verificada": "Sí"
+ },
+ {
+  "ymca": "YMCA Bolivia",
+  "asociacion": "ACJ-YMCA Santa Cruz",
+  "ciudad": "Santa Cruz de la Sierra",
+  "verificada": "Sí"
+ }
+]

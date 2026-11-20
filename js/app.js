@@ -337,16 +337,29 @@
   }
   function listAlliances(el, prog, s, withObj) {
     if (!M.box(el, ['alianzas'])) return;
-    const ar = rows('alianzas').filter((r) => r.programa === prog && inSel(r, s.ciclo, s.ymca));
+    const ar = rows('alianzas').filter((r) => [].concat(prog).includes(r.programa) && inSel(r, s.ciclo, s.ymca));
     if (!ar.length) { M.note(el, 'Sin información'); return; }
     const w = M.el('div', 'm-hbars');
     d3.groups(ar, (r) => r.ymca).sort((a, b) => a[0].localeCompare(b[0])).forEach(([y, rs]) => {
       const f = M.el('div', 'm-hb'); f.append(M.el('strong', null, y));
       if (withObj) {
         const ul = M.el('ul', 'm-legend');
-        d3.groups(rs, (r) => r.institucion).forEach(([inst, irs]) => { const li = M.el('li'); li.style.gridTemplateColumns = '1fr'; li.append(M.el('span', null, inst + ' — ' + [...new Set(irs.map((r) => r.objetivo))].join('; ') + (s.ciclo === H ? ' (' + [...new Set(irs.map((r) => r.ciclo))].join(', ') + ')' : ''))); ul.append(li); });
+        d3.groups(rs, (r) => r.institucion).forEach(([inst, irs]) => {
+          const li = M.el('li'); li.style.gridTemplateColumns = '1fr';
+          const uniq = (f) => [...new Set(irs.map(f).filter(Boolean))];
+          const obj = uniq((r) => r.objetivo).join('; ');
+          li.append(M.el('span', null, inst + (obj ? ' — ' + obj : '') + (s.ciclo === H ? ' (' + uniq((r) => r.ciclo).join(', ') + ')' : '')));
+          // datos que llegan por el formulario de alianzas: tipo de institución, aporte y su detalle, estado
+          const extra = uniq((r) => r.tipo_institucion).concat(uniq((r) => [r.aporte, r.detalle].filter(Boolean).join(': ')), uniq((r) => (r.estado && r.estado !== 'Activa' ? r.estado : '')));
+          if (extra.length) li.append(M.el('span', 'm-foot', extra.join(' · ')));
+          ul.append(li);
+        });
         f.append(ul);
-      } else f.append(M.chips([...new Set(rs.map((r) => r.institucion))]));
+      } else {
+        f.append(M.chips([...new Set(rs.map((r) => r.institucion))]));
+        const det = [...new Set(rs.map((r) => (r.aporte ? r.institucion + ': ' + [r.aporte, r.detalle].filter(Boolean).join(', ') : '')).filter(Boolean))];
+        if (det.length) f.append(M.el('span', 'm-foot', det.join(' · ')));
+      }
       w.append(f);
     });
     el.append(w);
@@ -553,6 +566,7 @@
       });
     }
     gantt($('#ch-crono-as'), p, s, (r, i) => [M.BRAND.verde, M.BRAND.celeste, M.BRAND.amarillo][i % 3]);
+    listAlliances($('#l-ali-as'), [p, 'Bluedrop'], s, true);
     setKpi($('#k-grupos'), p, s.ciclo, s.ymca, 'grupos', M.num, 'Sin información');
     setKpi($('#k-locs'), p, s.ciclo, s.ymca, 'locaciones', M.num, 'Sin información');
     const rc = setKpi($('#k-contra'), p, s.ciclo, s.ymca, 'contrapartida_usd', M.usd, 'Sin información');
@@ -675,6 +689,7 @@
     if (M.box(e1, ['eventos_delta'])) ev.length ? M.hbars(e1, ev.map((r, i) => ({ label: lab(r), value: r.participantes, color: M.PAL[i % 8], mark: { source: 'eventos_delta', field: 'participantes', where: M.where({ id: r.id }) } })), M.num) : M.note(e1, 'Sin información');
     if (M.box(e2, ['eventos_delta'])) evF.length ? M.hbars(e2, evF.map((r, i) => ({ label: lab(r), value: r.fondos_usd, color: M.PAL[i % 8], mark: { source: 'eventos_delta', field: 'fondos_usd', where: M.where({ id: r.id }) } })), M.usd) : M.note(e2, 'Sin información');
     gantt($('#ch-crono-dl'), p, s, () => M.accent);
+    listAlliances($('#l-ali-dl'), p, s, true);
     const nl = $('#l-dl-narr');
     if (M.box(nl, ['eventos_delta'])) {
       if (!ev.length) M.note(nl, 'Sin información');

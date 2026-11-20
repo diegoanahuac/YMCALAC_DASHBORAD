@@ -17,9 +17,10 @@
   const SCHEMA = {
     kpis: { cols: ['programa', 'ciclo', 'ymca', 'indicador', 'valor', 'anterior', 'cambio_pct'], num: ['valor', 'anterior', 'cambio_pct'], key: ['programa', 'ciclo', 'ymca', 'indicador'], opt: ['anterior', 'cambio_pct'] },
     implementaciones: { cols: ['programa', 'ciclo', 'ymca', 'pais', 'ciudad', 'lat', 'lon', 'comunidad', 'donantes'], num: ['lat', 'lon'], key: ['programa', 'ciclo', 'ymca'] },
-    cronograma: { cols: ['programa', 'ciclo', 'ymca', 'etiqueta', 'tipo', 'inicio', 'fin'], date: ['inicio', 'fin'], key: ['programa', 'ciclo', 'ymca', 'inicio', 'fin'] },
-    edad_genero: { cols: ['programa', 'segmento', 'ciclo', 'ymca', 'rango_edad', 'genero', 'n'], num: ['n'], key: ['programa', 'ciclo', 'ymca', 'rango_edad', 'genero'] },
-    alianzas: { cols: ['programa', 'ciclo', 'ymca', 'institucion', 'objetivo'], key: ['programa', 'ciclo', 'ymca', 'institucion'] },
+    cronograma: { cols: ['programa', 'ciclo', 'ymca', 'etiqueta', 'tipo', 'inicio', 'fin', 'categoria', 'estado', 'modalidad', 'sede'], date: ['inicio', 'fin'], key: ['programa', 'ciclo', 'ymca', 'inicio', 'fin'], opt: ['categoria', 'estado', 'modalidad', 'sede'] },
+    edad_genero: { cols: ['programa', 'segmento', 'ciclo', 'ymca', 'rango_edad', 'genero', 'n', 'metodo'], num: ['n'], key: ['programa', 'ciclo', 'ymca', 'rango_edad', 'genero'], opt: ['metodo'] },
+    alianzas: { cols: ['programa', 'ciclo', 'ymca', 'institucion', 'objetivo', 'tipo_institucion', 'aporte', 'otros_aportes', 'detalle', 'personas', 'formalizacion', 'estado', 'desde', 'alcance', 'direccion', 'sede'],
+      num: ['personas'], key: ['programa', 'ciclo', 'ymca', 'institucion'], opt: ['objetivo', 'tipo_institucion', 'aporte', 'otros_aportes', 'detalle', 'personas', 'formalizacion', 'estado', 'desde', 'alcance', 'direccion', 'sede'] },
     perfil_after_school: { cols: ['ciclo', 'ymca', 'formato', 'hello_insight', 'tipo_ciclo', 'continuidad', 'inicio', 'fin', 'locaciones_texto', 'dias', 'areas', 'uso_fondos', 'otros_donantes', 'comunidad'], date: ['inicio', 'fin'], key: ['ciclo', 'ymca'] },
     perfil_bluedrop: { cols: ['ciclo', 'ymca', 'modelo', 'programas_uso', 'habilidades', 'actividades'], key: ['ciclo', 'ymca'] },
     perfil_tejiendo_paz: { cols: ['ciclo', 'ymca', 'tipo_violencia', 'grupos_prioritarios'], key: ['ciclo', 'ymca'] },
@@ -92,8 +93,9 @@
     return true;
   }
   function rederive() {
-    if (!FEAT.derivar || !raw.kpis || !window.MEL_DERIVE) return;
-    store.kpis = { status: 'ok', data: window.MEL_DERIVE(raw.kpis, raw.implementaciones || []), origin: store.kpis.origin };
+    if (!FEAT.derivar || !window.MEL_DERIVE) return;
+    if (raw.kpis) store.kpis = { status: 'ok', data: window.MEL_DERIVE(raw.kpis, raw.implementaciones || []), origin: store.kpis.origin };
+    if (raw.edad_genero && store.edad_genero) store.edad_genero = { status: 'ok', data: window.MEL_DERIVE.ages(raw.edad_genero), origin: store.edad_genero.origin };
   }
 
   // ---------- lectura ----------

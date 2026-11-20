@@ -31,6 +31,9 @@ window.MEL_CONFIG = {
   // YMCA que abre "Perfil por YMCA".
   defaultYmca: 'YMCA México',
 
+  // Mínimo para publicar por separado la cifra de personas no binarias; por debajo se suma a "No especifica".
+  minCelda: 5,
+
   features: {
     // Tabla de avance del reporte por YMCA en la pestaña Regional.
     semaforo: true,

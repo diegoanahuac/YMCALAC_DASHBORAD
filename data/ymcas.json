@@ -1,0 +1,272 @@
+[
+ {
+  "ymca": "YMCA Aruba",
+  "pais": "Aruba",
+  "subregion": "Caribe",
+  "idioma": "Neerlandés",
+  "nombre_oficial": "YMCA Aruba",
+  "sitio": "https://www.ymca.int/countries/aruba/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Grand Bahama",
+  "pais": "Bahamas",
+  "subregion": "Caribe",
+  "idioma": "Inglés",
+  "nombre_oficial": "YMCA Grand Bahama",
+  "sitio": "https://www.ymca.int/countries/bahamas/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Barbados",
+  "pais": "Barbados",
+  "subregion": "Caribe",
+  "idioma": "Inglés",
+  "nombre_oficial": "Barbados YMCA",
+  "sitio": "https://www.ymca.int/countries/barbados/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Belice",
+  "pais": "Belice",
+  "subregion": "Caribe",
+  "idioma": "Inglés",
+  "nombre_oficial": "YMCA Belize",
+  "sitio": "https://www.ymca.int/countries/belize/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Cuba",
+  "pais": "Cuba",
+  "subregion": "Caribe",
+  "idioma": "Español",
+  "nombre_oficial": "YMCA Cuba",
+  "sitio": "https://www.ymca.int/countries/cuba/",
+  "en_formulario": "No",
+  "nota": "Solo en el directorio de World YMCA; no aparece en ymcalac.org y su actividad no está verificada."
+ },
+ {
+  "ymca": "YMCA Haití",
+  "pais": "Haití",
+  "subregion": "Caribe",
+  "idioma": "Francés",
+  "nombre_oficial": "YMCA d'Haïti",
+  "sitio": "https://ymca.asso.ht/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Islas Caimán",
+  "pais": "Islas Caimán",
+  "subregion": "Caribe",
+  "idioma": "Inglés",
+  "nombre_oficial": "YMCA of the Cayman Islands",
+  "sitio": "https://ymcacayman.ky/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Jamaica",
+  "pais": "Jamaica",
+  "subregion": "Caribe",
+  "idioma": "Inglés",
+  "nombre_oficial": "National Council of YMCA Jamaica",
+  "sitio": "https://www.ymca.int/countries/jamaica/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA República Dominicana",
+  "pais": "República Dominicana",
+  "subregion": "Caribe",
+  "idioma": "Español",
+  "nombre_oficial": "Asociación Cristiana de Jóvenes (ACJ-YMCA) de la República Dominicana",
+  "sitio": "https://www.ymca.int/countries/dominican-republic/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Trinidad y Tobago",
+  "pais": "Trinidad y Tobago",
+  "subregion": "Caribe",
+  "idioma": "Inglés",
+  "nombre_oficial": "YMCA of Trinidad and Tobago",
+  "sitio": "https://ymcatt.org/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Costa Rica",
+  "pais": "Costa Rica",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "ACJ YMCA Costa Rica",
+  "sitio": "https://ymcacr.org/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA El Salvador",
+  "pais": "El Salvador",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "YMCA El Salvador",
+  "sitio": "https://www.ymca.int/countries/el-salvador/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Guatemala",
+  "pais": "Guatemala",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "Asociación Cristiana de Jóvenes (ACJ) / YMCA de Guatemala",
+  "sitio": "https://www.ymca.int/countries/guatemala/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Honduras",
+  "pais": "Honduras",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "ACJ-YMCA Honduras",
+  "sitio": "https://ymcahonduras.org/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA México",
+  "pais": "México",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "Federación de Asociaciones Cristianas de Jóvenes de la República Mexicana",
+  "sitio": "https://ymca.org.mx/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Nicaragua",
+  "pais": "Nicaragua",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "ACJ-YMCA Nicaragua",
+  "sitio": "https://www.ymca.int/countries/nicaragua/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Panamá",
+  "pais": "Panamá",
+  "subregion": "Mesoamérica",
+  "idioma": "Español",
+  "nombre_oficial": "YMCA Panamá",
+  "sitio": "https://www.ymca.int/countries/panama/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Bolivia",
+  "pais": "Bolivia",
+  "subregion": "Andina",
+  "idioma": "Español",
+  "nombre_oficial": "YMCA Bolivia",
+  "sitio": "https://www.ymca.int/countries/bolivia/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Colombia",
+  "pais": "Colombia",
+  "subregion": "Andina",
+  "idioma": "Español",
+  "nombre_oficial": "Federación Colombiana de YMCA",
+  "sitio": "https://ymcacolombia.org/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Ecuador",
+  "pais": "Ecuador",
+  "subregion": "Andina",
+  "idioma": "Español",
+  "nombre_oficial": "ACJ-YMCA Ecuador",
+  "sitio": "https://www.ymca.int/countries/ecuador/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Perú",
+  "pais": "Perú",
+  "subregion": "Andina",
+  "idioma": "Español",
+  "nombre_oficial": "Asociación Cristiana de Jóvenes del Perú",
+  "sitio": "https://www.ymca.pe/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Venezuela",
+  "pais": "Venezuela",
+  "subregion": "Andina",
+  "idioma": "Español",
+  "nombre_oficial": "YMCA Venezuela",
+  "sitio": "https://ymca.com.ve/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Brasil",
+  "pais": "Brasil",
+  "subregion": "Brasil",
+  "idioma": "Portugués",
+  "nombre_oficial": "Federação Brasileira das Associações Cristãs de Moços",
+  "sitio": "https://www.ymca.int/countries/brazil/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Argentina",
+  "pais": "Argentina",
+  "subregion": "Cono Sur",
+  "idioma": "Español",
+  "nombre_oficial": "Asociación Cristiana de Jóvenes (YMCA Argentina)",
+  "sitio": "https://ymca.org.ar/",
+  "en_formulario": "Sí",
+  "nota": "En el directorio de World YMCA; no aparece en la lista de ymcalac.org."
+ },
+ {
+  "ymca": "YMCA Chile",
+  "pais": "Chile",
+  "subregion": "Cono Sur",
+  "idioma": "Español",
+  "nombre_oficial": "YMCA Chile",
+  "sitio": "https://www.ymca.int/countries/chile/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Paraguay",
+  "pais": "Paraguay",
+  "subregion": "Cono Sur",
+  "idioma": "Español",
+  "nombre_oficial": "Asociación Cristiana de Jóvenes Paraguay",
+  "sitio": "https://www.ymca.int/countries/paraguay/",
+  "en_formulario": "Sí",
+  "nota": ""
+ },
+ {
+  "ymca": "YMCA Uruguay",
+  "pais": "Uruguay",
+  "subregion": "Cono Sur",
+  "idioma": "Español",
+  "nombre_oficial": "Asociación Cristiana de Jóvenes (ACJ-YMCA Uruguay)",
+  "sitio": "https://www.acj.uy/",
+  "en_formulario": "Sí",
+  "nota": ""
+ }
+]
