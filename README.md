@@ -26,9 +26,9 @@ En GitHub: **Settings → Pages → Deploy from a branch → `main` / root**. El
 
 ## Conectar Google Sheets
 
-Hoy el dashboard abre con los datos de respaldo de `/data`. Para que lea la hoja en vivo:
+El dashboard ya lee una hoja de Google a través de la aplicación web indicada en [`js/config.js`](js/config.js). Si esa hoja no responde, muestra los datos de respaldo de `/data`. Para conectarlo a otra hoja:
 
-1. Crea una hoja de cálculo y abre **Extensiones → Apps Script**. Pega el contenido de [`apps-script/Code.gs`](apps-script/Code.gs).
+1. Crea una hoja de cálculo y abre **Extensiones → Apps Script**. Pega el contenido de [`apps-script/Code.gs`](apps-script/Code.gs). También sirve un proyecto nuevo en <https://script.google.com> con el ID de la hoja escrito en `SHEET_ID`.
 2. Ejecuta `configurar`: crea una pestaña por dataset con sus encabezados.
 3. Ejecuta `importarDatosActuales` si quieres partir de los datos que ya muestra el dashboard.
 4. **Implementar → Nueva implementación → Aplicación web**, con *Ejecutar como: yo* y *Acceso: cualquier persona*. Copia la URL que termina en `/exec`.
@@ -58,10 +58,11 @@ Cada respuesta se convierte en filas de la pestaña `kpis` y reemplaza el valor 
 | Tramo | Demora |
 | --- | --- |
 | Formulario → hoja → pestaña `kpis` | 2 a 10 s |
-| Caché de la aplicación web | hasta 20 s; se vacía sola con cada respuesta |
+| Caché de la aplicación web | hasta 20 s; se vacía sola con cada respuesta de formulario |
+| Respuesta de la aplicación web | 1.5 s con caché, unos 5 s sin caché |
 | Consulta del dashboard | cada 60 s (`refreshSeconds`, mínimo 15) |
 
-Un dato nuevo aparece en pantalla en menos de 70 s sin recargar, o de inmediato con **Actualizar**.
+Un dato nuevo aparece en pantalla en menos de 90 s sin recargar (64 s medidos al editar una celda a mano), o en pocos segundos con **Actualizar**.
 El dashboard deja de consultar cuando la pestaña del navegador está oculta y retoma al volver.
 Si la hoja no responde, conserva los últimos datos, lo indica en la barra de estado y reintenta con esperas crecientes.
 

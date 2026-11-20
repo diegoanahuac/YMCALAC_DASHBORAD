@@ -9,10 +9,10 @@
  */
 window.MEL_CONFIG = {
   source: {
-    type: 'snapshot',
+    type: 'appsScript',
+    url: 'https://script.google.com/macros/s/AKfycbyJLNnN12sQMiSz8A4yALYKqpvZhnJJ0tqyJqmU88bunjwz6PxxThrPRA7amErDOLE2aw/exec',
 
-    // type: 'appsScript',
-    // url: 'https://script.google.com/macros/s/XXXXXXXX/exec',
+    // type: 'snapshot',
 
     // type: 'gviz',
     // sheetId: 'ID_DE_LA_HOJA',
@@ -22,7 +22,7 @@ window.MEL_CONFIG = {
   // Cada cuántos segundos se vuelve a consultar la hoja (mínimo 15).
   refreshSeconds: 60,
   // Tiempo máximo de espera por consulta.
-  timeoutMs: 15000,
+  timeoutMs: 25000,
 
   // Filtros con los que abre el dashboard.
   defaults: { prog: 'Todos', ciclo: '2025', ymca: 'Todas', equipo: 'Pares', tp: 'Participantes' },
