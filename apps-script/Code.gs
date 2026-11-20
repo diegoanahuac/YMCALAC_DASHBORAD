@@ -9,7 +9,7 @@
  *   3. Implementar → Nueva implementación → Aplicación web
  *        Ejecutar como: yo · Quién tiene acceso: cualquier persona
  *      Copia la URL que termina en /exec y pégala en js/config.js del repositorio.
- *   4. (Formularios) Ejecuta `activarFormularios` una vez.
+ *   4. (Formularios) Ejecuta `crearFormulario`: crea el formulario, lo vincula y activa su procesamiento.
  *
  * La hoja sigue siendo privada: la aplicación web solo entrega las pestañas listadas en TABS.
  */
@@ -113,6 +113,51 @@ function configurar() {
   // conteo de filas por pestaña en la portada, si existe
   const portada = ss.getSheetByName('LEEME');
   if (portada) Object.keys(TABS).forEach(function (name, i) { portada.getRange(5 + i, 3).setFormula("=COUNTA('" + name + "'!A2:A)"); });
+}
+
+/**
+ * Crea el formulario de captura, lo vincula a la hoja y anota sus enlaces en la portada.
+ * Las preguntas salen de PREGUNTAS_CLAVE y PREGUNTA_A_INDICADOR; la lista de YMCA, de `implementaciones`.
+ * Se puede ejecutar varias veces: si el formulario ya existe solo muestra sus enlaces.
+ */
+function crearFormulario() {
+  const props = PropertiesService.getScriptProperties();
+  const ss = hoja_();
+  let form = null;
+  try { if (props.getProperty('FORM_ID')) form = FormApp.openById(props.getProperty('FORM_ID')); } catch (err) { form = null; }
+  if (!form) {
+    const impl = ss.getSheetByName('implementaciones').getDataRange().getValues();
+    const col = impl[0].indexOf('ymca');
+    const ymcas = impl.slice(1).map(function (r) { return String(r[col]).trim(); })
+      .filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort();
+    form = FormApp.create('Reporte de indicadores · Sistema MEL YMCA LAC');
+    form.setDescription('Un envío por programa, ciclo y YMCA. Llena solo los indicadores que apliquen. ' +
+      'Si corriges un dato, vuelve a enviar el formulario: el valor nuevo reemplaza al anterior.');
+    form.addListItem().setTitle(PREGUNTAS_CLAVE.programa).setRequired(true)
+      .setChoiceValues(['Eleva', 'After School', 'Bluedrop', 'Tejiendo Paz', 'Delta']);
+    form.addTextItem().setTitle(PREGUNTAS_CLAVE.ciclo).setRequired(true)
+      .setHelpText('Año calendario (2026) o ciclo escolar (2026-2027).')
+      .setValidation(FormApp.createTextValidation().requireTextMatchesPattern('^\\d{4}(-\\d{4})?$')
+        .setHelpText('Escribe un año, como 2026, o un ciclo, como 2026-2027.').build());
+    form.addListItem().setTitle(PREGUNTAS_CLAVE.ymca).setRequired(true).setChoiceValues(ymcas);
+    form.addSectionHeaderItem().setTitle('Indicadores').setHelpText('Solo números, sin símbolos ni separadores.');
+    Object.keys(PREGUNTA_A_INDICADOR).forEach(function (titulo) {
+      form.addTextItem().setTitle(titulo)
+        .setValidation(FormApp.createTextValidation().requireNumberGreaterThanOrEqualTo(0).setHelpText('Escribe un número.').build());
+    });
+    form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
+    props.setProperty('FORM_ID', form.getId());
+  }
+  activarFormularios();
+  const portada = ss.getSheetByName('LEEME');
+  if (portada) {
+    portada.getRange(16, 1, 2, 2).setValues([
+      ['Formulario: responder', form.getPublishedUrl()],
+      ['Formulario: editar preguntas', form.getEditUrl()],
+    ]);
+  }
+  Logger.log('Responder: ' + form.getPublishedUrl());
+  Logger.log('Editar: ' + form.getEditUrl());
 }
 
 /** Instala (una sola vez) el activador que procesa cada respuesta de formulario. */

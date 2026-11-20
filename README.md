@@ -46,12 +46,16 @@ Alternativa sin Apps Script: `type: 'gviz'` con el `sheetId`. Exige compartir la
 
 ## Conectar Google Forms
 
-1. Vincula el formulario a la misma hoja (**Respuestas → Vincular con Hojas de cálculo**).
-2. El formulario necesita las preguntas `Programa`, `Ciclo` y `YMCA`, más una pregunta numérica por indicador.
-3. En `Code.gs`, ajusta `PREGUNTA_A_INDICADOR` con los títulos exactos de tus preguntas.
-4. En Apps Script ejecuta `activarFormularios` una vez.
+En Apps Script ejecuta `crearFormulario`. La función:
+
+1. Crea el formulario "Reporte de indicadores" con las preguntas `Programa`, `Ciclo` y `YMCA`, más una pregunta numérica por indicador.
+2. Lo vincula a la hoja (pestaña de respuestas) y activa el procesamiento de cada envío.
+3. Anota en la pestaña `LEEME` los enlaces para responder y para editar las preguntas.
 
 Cada respuesta se convierte en filas de la pestaña `kpis` y reemplaza el valor anterior de esa YMCA, ciclo e indicador.
+
+Para agregar un indicador: añade la pregunta al formulario y su título exacto a `PREGUNTA_A_INDICADOR` en el script.
+Quien tenga el enlace del formulario puede cambiar las cifras del dashboard: compártelo solo con quienes reportan.
 
 ### Tiempo de reacción
 
