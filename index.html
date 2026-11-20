@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema MEL · YMCA LAC</title>
+<meta name="description" content="Sistema de Monitoreo, Evaluación y Aprendizaje de los Programas y Proyectos Regionales de YMCA LAC.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307568e'/%3E%3Cpath d='M8 22V10h3l5 7 5-7h3v12h-3v-7l-5 7-5-7v7z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<noscript><p style="padding:24px">Este dashboard necesita JavaScript para mostrar los datos.</p></noscript>
+<div id="dash-root">
+<div class="m" id="m">
+  <div class="m-stripe" aria-hidden="true"></div>
+  <header class="m-head" id="inicio">
+    <div class="m-eyebrow"><span>YMCA LAC · Sistema MEL</span><span class="m-chip">Uso interno</span></div>
+    <h1 class="m-title">Sistema de Monitoreo, Evaluación y Aprendizaje de los Programas y Proyectos Regionales de YMCA LAC</h1>
+    <div class="m-live" id="live" role="status" data-state="wait">
+      <span class="m-live-dot" aria-hidden="true"></span><span id="live-text">Cargando datos…</span>
+      <span class="m-live-actions"><button class="m-btn" id="live-refresh" type="button">Actualizar</button><button class="m-btn" id="live-print" type="button">Imprimir / PDF</button></span>
+    </div>
+  </header>
+
+  <nav class="m-tabs" role="tablist" aria-label="Programa" id="tabs">
+    <button class="m-tab" role="tab" id="regional" data-prog="Todos"><span class="m-dot"></span>Regional</button>
+    <button class="m-tab" role="tab" id="eleva" data-prog="Eleva"><span class="m-dot"></span>Eleva</button>
+    <button class="m-tab" role="tab" id="after-school" data-prog="After School"><span class="m-dot"></span>After School Programme</button>
+    <button class="m-tab" role="tab" id="tejiendo-paz" data-prog="Tejiendo Paz"><span class="m-dot"></span>Tejiendo Paz</button>
+    <button class="m-tab" role="tab" id="delta" data-prog="Delta"><span class="m-dot"></span>Patrocinios Delta Air Lines</button>
+    <button class="m-tab" role="tab" id="por-ymca" data-prog="YMCA"><span class="m-dot"></span>Perfil por YMCA</button>
+  </nav>
+
+  <section class="m-hero" id="programa" role="tabpanel" aria-live="off">
+    <div class="m-hero-top">
+      <div class="m-hero-t"><div class="m-hero-k" id="prog-kicker">—</div><h2 id="prog-name">—</h2><p id="prog-sub"></p></div>
+      <div class="m-tags" id="donantes" data-source="implementaciones"></div>
+    </div>
+    <p class="m-take" id="takeaway"><span class="dash-skeleton">—</span></p>
+    <div class="m-filters" id="filtros">
+      <label class="m-field" for="f-ciclo"><span id="f-ciclo-l">Ciclo</span><select class="m-sel" id="f-ciclo" data-source="kpis"></select></label>
+      <label class="m-field" for="f-ymca">YMCA<select class="m-sel" id="f-ymca" data-source="implementaciones"></select></label>
+      <button class="m-btn" id="f-reset" type="button">Restablecer</button>
+      <span class="m-lens" id="lens"></span>
+    </div>
+    <nav class="m-jump" id="jump" aria-label="Secciones de esta página"></nav>
+  </section>
+
+  <!-- ===== Bloque común ===== -->
+  <section class="m-sec" id="bloque-comun">
+    <div class="m-sec-h"><h3 id="h-comun">Resumen</h3></div>
+    <p class="m-mini">Alcance</p>
+    <div class="m-kpis">
+      <div class="m-kpi" id="card-participantes"><div class="m-kpi-l" id="k-part-l">Participantes</div><div class="m-kpi-v dash-skeleton" id="k-part" data-fetchpriority="high">—</div><div class="m-kpi-d" id="k-part-d"></div><div class="m-kpi-s" id="k-part-s"></div></div>
+      <div class="m-kpi" id="card-fondos"><div class="m-kpi-l" id="k-fondos-l">Fondos asignados</div><div class="m-kpi-v dash-skeleton" id="k-fondos">—</div><div class="m-kpi-d" id="k-fondos-d"></div><div class="m-kpi-s" id="k-fondos-s"></div></div>
+      <div class="m-kpi" id="card-ymcas"><div class="m-kpi-l">YMCA participantes</div><div class="m-kpi-v dash-skeleton" id="k-ymcas">—</div><div class="m-kpi-s"><span id="k-paises">—</span> países · <span id="k-ciudades">—</span> ciudades</div></div>
+    </div>
+    <p class="m-mini">Cobertura y población</p>
+    <div class="m-grid m-grid-cob">
+      <div class="m-card" id="card-mapa">
+        <h4>Dónde se implementa</h4>
+        <p class="m-sub" id="s-mapa">Países pintados donde hay implementación. Pasa el cursor por un punto para ver ciclos y comunidad.</p>
+        <div class="m-chart" id="ch-mapa" data-source="implementaciones mapa_base"></div>
+        <div class="m-maplist" id="map-list" data-source="implementaciones"></div>
+      </div>
+      <div class="m-card" id="card-piramide"><h4>Edad × género</h4><p class="m-sub" id="s-piramide"></p><div class="m-chart" id="ch-piramide" data-source="edad_genero"></div></div>
+      <div class="m-card" id="card-genero"><h4 id="h-genero">Género</h4><p class="m-sub" id="s-genero"></p>
+        <div class="m-gen-pair"><div><p class="m-k" id="l-gen1" hidden>Grupo de jóvenes</p><div class="m-chart" id="ch-genero" data-source="edad_genero"></div></div>
+        <div><p class="m-k" id="l-gen2" hidden>Grupo de adultos</p><div class="m-chart" id="ch-genero2" data-source="edad_genero" hidden></div></div></div></div>
+    </div>
+    <p class="m-places" id="map-places" data-source="implementaciones"></p>
+  </section>
+
+  <!-- ===== Regional ===== -->
+  <section class="m-sec" id="sec-regional" hidden>
+    <div class="m-sec-h"><h3>Programas, Proyectos e Iniciativas Regionales</h3><span>Entra a la página de cada uno</span></div>
+    <div class="m-progs" id="l-programas" data-source="kpis"></div>
+    <div class="m-sec-h"><h3>Participantes y fondos por programa, proyecto o iniciativa regional</h3></div>
+    <div class="m-grid">
+      <div class="m-card" id="card-prog-part"><h4>Participantes</h4><div class="m-chart short" id="ch-prog-part" data-source="kpis"></div></div>
+      <div class="m-card" id="card-prog-fondos"><h4>Fondos asignados</h4><div class="m-chart short" id="ch-prog-fondos" data-source="kpis"></div></div>
+    </div>
+    <div id="blk-semaforo" hidden>
+      <div class="m-sec-h"><h3>Avance del reporte por YMCA</h3><span id="s-semaforo"></span></div>
+      <div class="m-card wide" id="card-semaforo">
+        <p class="m-sub">Porcentaje de la información esperada que cada YMCA ya reportó en cada programa. Elige un porcentaje para ver qué falta.</p>
+        <div class="m-table-wrap" id="t-semaforo"></div>
+        <p class="m-foot" id="semaforo-det" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Eleva ===== -->
+  <section class="m-sec" id="sec-eleva" hidden>
+    <div class="m-sec-h"><h3 class="has-icon"><img class="m-icon" data-icon="logro" alt="">Equipo local de implementación</h3><span>Personas pares, voluntarias y profesionales</span></div>
+    <div class="m-kpis">
+      <div class="m-kpi"><div class="m-kpi-l">Personas pares</div><div class="m-kpi-v" id="k-pares">—</div><div class="m-kpi-d" id="k-pares-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Personas voluntarias</div><div class="m-kpi-v" id="k-vol">—</div><div class="m-kpi-d" id="k-vol-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Personas profesionales</div><div class="m-kpi-v" id="k-prof">—</div><div class="m-kpi-d" id="k-prof-d"></div></div>
+    </div>
+    <div class="m-card" id="card-equipo">
+      <div class="m-sec-h" style="border:0;padding:0"><h4>Edad × género del equipo</h4>
+        <div class="m-seg" id="f-equipo" role="group" aria-label="Tipo de equipo"><button type="button" data-v="Pares">Pares</button><button type="button" data-v="Voluntarios">Voluntarias</button><button type="button" data-v="Profesionales">Profesionales</button></div></div>
+      <div class="m-chart" id="ch-equipo" data-source="edad_genero"></div>
+    </div>
+
+    <div class="m-sec-h"><h3>Implementación</h3><span>Comunidad, cronograma y alianzas</span></div>
+    <div class="m-card wide" id="card-crono-eleva"><h4>Cronograma de implementación</h4><div class="m-chart short" id="ch-crono-eleva" data-source="cronograma"></div></div>
+    <div class="m-grid">
+      <div class="m-card" id="card-com-eleva"><h4>Comunidad donde se implementa</h4><div id="l-com-eleva" data-source="implementaciones"></div></div>
+      <div class="m-card" id="card-ali-eleva"><h4>Alianzas establecidas</h4><div id="l-ali-eleva" data-source="alianzas"></div></div>
+    </div>
+
+    <div class="m-sec-h"><h3 class="has-icon"><img class="m-icon" data-icon="persona" alt="">Componente de formación</h3><span>Talleres y finalización</span></div>
+    <div class="m-kpis">
+      <div class="m-kpi"><div class="m-kpi-l">Talleres con jóvenes</div><div class="m-kpi-v" id="k-tal-j">—</div><div class="m-kpi-d" id="k-tal-j-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Talleres con adultos</div><div class="m-kpi-v" id="k-tal-a">—</div><div class="m-kpi-d" id="k-tal-a-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Tasa de finalización · jóvenes</div><div class="m-kpi-v" id="k-tasa-j">—</div><div class="m-kpi-d" id="k-tasa-j-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Tasa de finalización · adultos</div><div class="m-kpi-v" id="k-tasa-a">—</div><div class="m-kpi-d" id="k-tasa-a-d"></div></div>
+    </div>
+
+    <div class="m-sec-h"><h3 class="has-icon"><img class="m-icon" data-icon="cuidado" alt="">Componente de acompañamiento y seguimiento</h3></div>
+    <div class="m-grid m-grid-kc">
+      <div class="m-kpi"><div class="m-kpi-l">Personas que recibieron acompañamiento o seguimiento</div><div class="m-kpi-v" id="k-acomp">—</div><div class="m-kpi-d" id="k-acomp-d"></div></div>
+      <div class="m-card" id="card-acomp"><h4>Por tipo de acompañamiento</h4><div class="m-chart short" id="ch-acomp" data-source="kpis"></div></div>
+    </div>
+
+    <div class="m-sec-h"><h3 class="has-icon"><img class="m-icon" data-icon="comunidad" alt="">Componente de sensibilización comunitaria</h3></div>
+    <div class="m-grid m-grid-kc">
+      <div class="m-kpis">
+        <div class="m-kpi"><div class="m-kpi-l">Actividades comunitarias</div><div class="m-kpi-v" id="k-actcom">—</div><div class="m-kpi-d" id="k-actcom-d"></div></div>
+        <div class="m-kpi"><div class="m-kpi-l">Personas alcanzadas</div><div class="m-kpi-v" id="k-alc">—</div><div class="m-kpi-d" id="k-alc-d"></div></div>
+      </div>
+      <div class="m-card" id="card-alc-edad"><h4>Personas alcanzadas por rango de edad</h4><div class="m-chart short" id="ch-alc-edad" data-source="edad_genero"></div></div>
+    </div>
+
+    <div class="m-sec-h"><h3 class="has-icon"><img class="m-icon" data-icon="cerebro" alt="">Herramienta de medición</h3><span>Pendiente</span></div>
+    <div class="m-reco" id="pend-eleva"><div class="m-reco-h"><span class="m-reco-tag">Pendiente</span><span class="m-reco-st">La herramienta se está actualizando; los movimientos no están aplicando pruebas pre y post por ahora</span></div>
+      <h4>Qué mide Eleva: conocimientos, actitudes y habilidades</h4>
+      <div class="m-reco-g">
+        <div class="m-reco-b"><div class="m-reco-k">Conocimientos</div><p>Identifica los saberes previos y los generados a través de la experiencia formativa. Instrumento: opción múltiple.</p></div>
+        <div class="m-reco-b"><div class="m-reco-k">Actitudes</div><p>Identifica actitudes previas respecto al cuidado y cambios de comportamiento derivados de la experiencia formativa. Instrumento: escala Likert.</p></div>
+        <div class="m-reco-b"><div class="m-reco-k">Habilidades</div><p>Identifica las habilidades de afrontamiento emocional previas y las adquiridas durante el proceso formativo. Instrumento: escala Likert.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== After School Programme ===== -->
+  <section class="m-sec" id="sec-after-school" hidden>
+    <div class="m-sec-h"><h3>Implementación</h3><span>Cada YMCA maneja sus propios periodos; el ciclo va de septiembre a julio</span></div>
+    <div class="m-card wide" id="card-fichas-as"><h4>Ficha por YMCA</h4><p class="m-sub" id="s-fichas-as">Estructura del reporte al donante.</p><div class="m-fichas" id="l-fichas-as" data-source="perfil_after_school implementaciones kpis cronograma"></div></div>
+    <div class="m-card wide" id="card-crono-as"><h4>Cronograma por YMCA</h4><div class="m-chart short" id="ch-crono-as" data-source="cronograma"></div></div>
+    <div class="m-kpis">
+      <div class="m-kpi"><div class="m-kpi-l">Grupos</div><div class="m-kpi-v" id="k-grupos">—</div><div class="m-def"><b>Grupo:</b> conjunto de participantes que asisten juntos a las sesiones, con el mismo horario y facilitador.</div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Locaciones</div><div class="m-kpi-v" id="k-locs">—</div><div class="m-def"><b>Locación:</b> espacio físico donde se implementa el programa (escuela, sede YMCA o centro comunitario). Una locación puede tener varios grupos.</div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Fondos de otros donantes (contrapartida)</div><div class="m-kpi-v" id="k-contra">—</div><div class="m-kpi-s" id="k-contra-s" data-source="perfil_after_school"></div></div>
+    </div>
+    <div class="m-sec-h"><h3>Patrocinio CIBC FirstCaribbean y Hello Insight</h3></div>
+    <div class="m-grid">
+      <div class="m-card" id="card-patrocinio"><h4>Distribución del patrocinio</h4><div class="m-chart short" id="ch-patrocinio" data-source="kpis"></div></div>
+      <div class="m-card" id="card-hello"><h4>Hello Insight</h4>
+        <div class="m-pstats"><div class="m-pstat"><b id="k-hello" data-source="perfil_after_school">—</b><span>YMCA que la implementan</span></div><div class="m-pstat"><b id="k-hello-usd">—</b><span>inversión de la oficina</span></div></div>
+        <p class="m-foot" id="k-hello-s"></p></div>
+    </div>
+    <div class="m-grid">
+      <div class="m-card wide" id="card-areas"><h4>Áreas que aborda cada YMCA</h4><div class="m-chart short" id="ch-areas" data-source="perfil_after_school"></div></div>
+      <div class="m-card wide" id="card-usofondos"><h4>Uso de fondos por YMCA</h4><div class="m-chart short" id="ch-usofondos" data-source="perfil_after_school"></div></div>
+    </div>
+
+    <div class="m-sec-h" id="bluedrop"><h3>Bluedrop</h3><span>Iniciativa dentro de After School Programme</span></div>
+    <div class="m-sub-block">
+      <p class="m-empty" id="bd-nota" hidden></p>
+      <div class="m-kpis">
+        <div class="m-kpi"><div class="m-kpi-l">Participantes Bluedrop</div><div class="m-kpi-v" id="k-bd-part">—</div><div class="m-kpi-d" id="k-bd-part-d"></div></div>
+        <div class="m-kpi"><div class="m-kpi-l">Dispositivos comprados</div><div class="m-kpi-v" id="k-bd-disp">—</div><div class="m-kpi-s"><span id="k-bd-tab">—</span> tablets · <span id="k-bd-com">—</span> computadoras</div></div>
+        <div class="m-kpi"><div class="m-kpi-l">Fondos Bluedrop</div><div class="m-kpi-v" id="k-bd-fondos">—</div><div class="m-kpi-s" id="k-bd-fondos-s"></div></div>
+      </div>
+      <div class="m-card wide" id="card-bd-fichas"><h4>Dispositivos por YMCA</h4><div class="m-fichas" id="l-bd-fichas" data-source="perfil_bluedrop kpis"></div></div>
+      <div class="m-grid">
+        <div class="m-card" id="card-bd-piramide"><h4>Edad × género · Bluedrop</h4><div class="m-chart" id="ch-bd-piramide" data-source="edad_genero"></div></div>
+        <div class="m-card" id="card-bd-genero"><h4>Género · Bluedrop</h4><div class="m-chart" id="ch-bd-genero" data-source="edad_genero"></div></div>
+      </div>
+      <div class="m-grid">
+        <div class="m-card wide" id="card-bd-hab"><h4>Habilidades desarrolladas</h4><div class="m-chart short" id="ch-bd-hab" data-source="perfil_bluedrop"></div></div>
+        <div class="m-card wide" id="card-bd-act"><h4>Actividades para las que se usan</h4><div class="m-chart short" id="ch-bd-act" data-source="perfil_bluedrop"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Tejiendo Paz ===== -->
+  <section class="m-sec" id="sec-tejiendo-paz" hidden>
+    <div class="m-sec-h"><h3>Participación en el proyecto</h3><span>Participantes en las actividades y jóvenes que lideran</span></div>
+    <div class="m-kpis">
+      <div class="m-kpi"><div class="m-kpi-l">Participantes en las actividades</div><div class="m-kpi-v" id="k-tp-part">—</div><div class="m-kpi-d" id="k-tp-part-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Jóvenes liderando el proyecto</div><div class="m-kpi-v" id="k-tp-lid">—</div><div class="m-kpi-d" id="k-tp-lid-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Actividades realizadas</div><div class="m-kpi-v" id="k-tp-act">—</div><div class="m-kpi-d" id="k-tp-act-d"></div></div>
+    </div>
+    <div class="m-card wide" id="card-tp-pob">
+      <div class="m-sec-h" style="border:0;padding:0"><h4>Edad y género</h4>
+        <div class="m-seg" id="f-tp" role="group" aria-label="Población"><button type="button" data-v="Participantes">Participantes</button><button type="button" data-v="Jóvenes líderes">Jóvenes líderes</button></div></div>
+      <div class="m-grid">
+        <div class="m-chart" id="ch-tp-piramide" data-source="edad_genero"></div>
+        <div class="m-chart" id="ch-tp-genero" data-source="edad_genero"></div>
+      </div>
+    </div>
+    <div class="m-sec-h"><h3>Implementación</h3><span>Comunidad, tipo de violencia y actividades</span></div>
+    <div class="m-card wide" id="card-crono-tp"><h4>Cronograma y actividades</h4><div class="m-chart short" id="ch-crono-tp" data-source="cronograma"></div></div>
+    <div class="m-card wide" id="card-fichas-tp"><h4>Comunidad y tipo de violencia por YMCA</h4><p class="m-sub" id="s-fichas-tp"></p><div class="m-fichas" id="l-fichas-tp" data-source="perfil_tejiendo_paz implementaciones"></div></div>
+    <div class="m-grid">
+      <div class="m-card" id="card-ali-tp"><h4>Alianzas y su objetivo</h4><div id="l-ali-tp" data-source="alianzas"></div></div>
+      <div class="m-card" id="card-grupos"><h4>Grupos prioritarios</h4><p class="m-sub" id="s-grupos"></p><div class="m-chart short" id="ch-grupos" data-source="perfil_tejiendo_paz"></div></div>
+    </div>
+  </section>
+
+  <!-- ===== Delta ===== -->
+  <section class="m-sec" id="sec-delta" hidden>
+    <div class="m-sec-h"><h3>Eventos y programas patrocinados</h3></div>
+    <div class="m-kpis">
+      <div class="m-kpi"><div class="m-kpi-l">Eventos o programas financiados</div><div class="m-kpi-v" id="k-dl-ev">—</div><div class="m-kpi-d" id="k-dl-ev-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">YMCA con voluntariado corporativo</div><div class="m-kpi-v" id="k-dl-vol" data-source="eventos_delta">—</div><div class="m-kpi-s" id="k-dl-vol-s" data-source="eventos_delta"></div></div>
+    </div>
+    <div class="m-card wide" id="card-dl-tabla"><h4>Detalle por evento o programa</h4>
+      <div class="m-table-wrap"><table class="m-table" id="t-dl" data-source="eventos_delta" data-row-key="id">
+        <thead><tr><th data-field="ymca">YMCA</th><th data-field="evento">Evento o programa</th><th data-field="tipo">Tipo</th><th data-field="inicio">Inicio</th><th data-field="fin">Fin</th><th class="n" data-field="participantes">Participantes</th><th class="n" data-field="fondos_usd">Fondos (USD)</th><th data-field="voluntariado">Voluntariado</th></tr></thead>
+        <tbody></tbody></table></div></div>
+    <div class="m-grid">
+      <div class="m-card" id="card-dl-part"><h4>Participantes por evento o programa</h4><div class="m-chart short" id="ch-dl-part" data-source="eventos_delta"></div></div>
+      <div class="m-card" id="card-dl-fondos"><h4>Fondos por evento o programa</h4><div class="m-chart short" id="ch-dl-fondos" data-source="eventos_delta"></div></div>
+    </div>
+    <div class="m-card wide" id="card-crono-dl"><h4>Cronograma de eventos y actividades</h4><div class="m-chart short" id="ch-crono-dl" data-source="cronograma"></div></div>
+    <div class="m-card wide" id="card-dl-narr"><h4>Información narrativa</h4><div class="m-fichas" id="l-dl-narr" data-source="eventos_delta"></div></div>
+  </section>
+
+  <!-- ===== Perfil por YMCA ===== -->
+  <section class="m-sec" id="sec-por-ymca" hidden>
+    <div class="m-sec-h"><h3>Ficha del movimiento</h3><span>Todos los programas de una YMCA en un solo lugar</span></div>
+    <div class="m-kpis">
+      <div class="m-kpi"><div class="m-kpi-l">Participantes en todos sus programas</div><div class="m-kpi-v" id="k-y-part">—</div><div class="m-kpi-d" id="k-y-part-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Fondos asignados</div><div class="m-kpi-v" id="k-y-fondos">—</div><div class="m-kpi-d" id="k-y-fondos-d"></div></div>
+      <div class="m-kpi"><div class="m-kpi-l">Programas activos</div><div class="m-kpi-v" id="k-y-progs" data-source="implementaciones">—</div><div class="m-kpi-s" id="k-y-progs-s"></div></div>
+    </div>
+    <div class="m-sec-h"><h3>Programas en esta YMCA</h3><span>Abre cada uno para ver el detalle</span></div>
+    <div class="m-progs" id="l-y-progs" data-source="kpis implementaciones"></div>
+  </section>
+
+  <!-- ===== Resumen histórico (solo en Histórico) ===== -->
+  <section class="m-sec" id="sec-historico" hidden>
+    <div class="m-sec-h"><h3 id="h-historico">Resumen histórico de la implementación</h3><span>Todos los ciclos</span></div>
+    <div class="m-grid">
+      <div class="m-card" id="card-part-ciclo"><h4>Participantes por ciclo</h4><p class="m-sub" id="s-part-ciclo"></p><div class="m-chart" id="ch-part-ciclo" data-source="kpis"></div></div>
+      <div class="m-card" id="card-fondos-ciclo"><h4>Fondos asignados por ciclo (USD)</h4><p class="m-sub" id="s-fondos-ciclo"></p><div class="m-chart" id="ch-fondos-ciclo" data-source="kpis"></div></div>
+    </div>
+  </section>
+
+  <!-- ===== Registro de datos (regional) ===== -->
+  <section class="m-sec" id="sec-registro" hidden>
+    <div class="m-sec-h"><h3>Registro de datos: qué es real y qué falta</h3><span>Se actualiza cada vez que se ingresa información real</span></div>
+    <div class="m-card wide" id="card-registro" data-period="none"><div class="m-table-wrap"><table class="m-table m-reg" id="t-registro" data-source="registro_datos" data-row-key="id">
+      <thead><tr><th data-field="programa">Programa</th><th data-field="informacion">Información</th><th data-field="estado">Estado</th><th data-field="fuente">Fuente</th><th data-field="nota">Nota</th></tr></thead><tbody></tbody></table></div></div>
+  </section>
+
+  <p class="m-foot" id="glosario"><b>Histórico:</b> todo lo acumulado desde la primera edición del programa en todas las YMCA. <b>Global:</b> todo lo de un ciclo específico. <b>Por YMCA:</b> solo un movimiento.</p>
+</div>
+</div>
+<script src="js/vendor/d3.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/derive.js"></script>
+<script src="js/dash.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

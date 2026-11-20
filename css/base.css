@@ -1,0 +1,19 @@
+/* Tokens y base que en el artifact original aportaba el runtime de Claude. */
+:root {
+  --cds-gap-xs: .5rem; --cds-gap-sm: .75rem; --cds-gap-md: 1rem; --cds-gap-lg: 1.75rem; --cds-gap-xl: 2.5rem;
+  --cds-pad-xs: .375rem; --cds-pad-sm: .5rem; --cds-pad-md: .75rem; --cds-pad-lg: 1rem;
+  --cds-font-size-caption: .75rem; --cds-font-size-body: .875rem; --cds-font-size-heading: .9375rem; --cds-font-size-title: 1.375rem;
+  --cds-font-weight-medium: 500; --cds-radius: .5rem; --cds-dur-slow: .45s;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #F5F6F8; color: #18212C; font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: var(--cds-font-size-body); line-height: 1.45; }
+#dash-root { max-width: 1360px; margin: 0 auto; }
+button, select { font-family: inherit; }
+button:disabled { opacity: .6; cursor: default; }
+
+/* marcador de carga */
+.dash-skeleton { color: transparent !important; -webkit-text-fill-color: transparent !important; background: #E6E9EE; border-radius: 6px; animation: dash-pulse 1.2s ease-in-out infinite; }
+.dash-skeleton * { visibility: hidden; }
+@keyframes dash-pulse { 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .dash-skeleton { animation: none; } * { scroll-behavior: auto !important; } }
